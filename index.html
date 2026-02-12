@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تولدت مبارک عشقم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lalezar&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-color: #ff3366; --gold-color: #ffd700; --text-color: #fff; --bg-color: #050510; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background-color: var(--bg-color); font-family: 'Amiri', serif; color: var(--text-color); }
+        
+        #stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--duration) infinite ease-in-out; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+        
+        #golden-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(255, 215, 0, 0.25) 0%, rgba(0,0,0,0) 70%); opacity: 0; transition: opacity 3s ease; z-index: -1; pointer-events: none; }
+        
+        #hearts-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .heart { position: absolute; bottom: -50px; color: var(--primary-color); animation: floatUp linear forwards; opacity: 0.9; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-110vh) scale(1.5); opacity: 0; } }
+
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: opacity 1s ease; z-index: 10; }
+        .hidden { opacity: 0; pointer-events: none; display: none; }
+
+        .gift-box { font-size: 100px; cursor: pointer; animation: pulse 1.5s infinite; filter: drop-shadow(0 0 25px rgba(255, 51, 102, 0.7)); transition: transform 0.3s; }
+        .gift-box:hover { transform: scale(1.15); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05) rotate(5deg); } 100% { transform: scale(1); } }
+
+        .intro-text { font-family: 'Lalezar', cursive; font-size: 1.8rem; margin-top: 20px; color: #ffd1dc; text-shadow: 0 0 10px #ff3366; }
+        .btn { margin-top: 30px; padding: 12px 40px; background: rgba(255, 255, 255, 0.1); border: 2px solid var(--primary-color); color: white; border-radius: 50px; cursor: pointer; font-size: 1.3rem; transition: all 0.3s; backdrop-filter: blur(5px); font-family: 'Lalezar', cursive; }
+        .btn:hover { background: var(--primary-color); box-shadow: 0 0 25px var(--primary-color); transform: translateY(-5px); }
+
+        #message-box { max-width: 90%; width: 600px; min-height: 300px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        .line-one { font-family: 'Lalezar', cursive; font-size: 2.1rem; margin-bottom: 25px; display: block; color: #fff; text-shadow: 0 4px 15px rgba(255, 51, 102, 0.6); line-height: 1.4; }
+        .line-two { font-family: 'Amiri', serif; font-size: 1.8rem; color: #ffadc6; display: block; text-shadow: 0 0 10px rgba(0,0,0,0.9); line-height: 1.8; font-weight: bold; }
+
+        .fade-in { animation: fadeIn 2s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        #next-btn { position: fixed; bottom: 50px; z-index: 20; }
+        
+        #music-control { position: fixed; top: 20px; right: 20px; z-index: 100; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.3); color: white; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: 0.3s; }
+        
+        /* ویدیو مخفی شده */
+        #bg-video { position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; }
+
+        @media (max-width: 600px) { .line-one { font-size: 1.7rem; } .line-two { font-size: 1.4rem; } .gift-box { font-size: 80px; } .intro-text { font-size: 1.4rem; } }
+    </style>
+</head>
+<body>
+    <div id="stars-container"></div>
+    <div id="golden-glow"></div>
+    <div id="hearts-container"></div>
+
+    <video id="bg-video" loop playsinline>
+        <source src="video.mp4" type="video/mp4">
+    </video>
+
+    <button id="music-control" onclick="toggleMusic()">🔇</button>
+
+    <div id="intro-screen" class="screen">
+        <div class="gift-box" onclick="openGift()">🎁</div>
+        <p class="intro-text">یک هدیه برای عشقم...</p>
+        <button class="btn" onclick="openGift()">باز کردن هدیه</button>
+    </div>
+
+    <div id="message-screen" class="screen hidden">
+        <div id="message-box"></div>
+        <button id="next-btn" class="btn" onclick="nextMessage()">بعدی ❤️</button>
+    </div>
+
+    <script>
+        const messages = [
+            { top: "عشقم 💖، تولدت مبارک 🎂✨!", bottom: "امروز روز توست و دلم می‌خواست کنار تو باشم 🌹" },
+            { top: "کاش می‌شد دستت را در دستم بگیرم 🤲", bottom: "و با تو این روز زیبا را جشن بگیرم... 🎉" },
+            { top: "اما حتی وقتی از هم دوریم... 🌌", bottom: "حس می‌کنم تو همین لحظه کنار من هستی 💞" },
+            { top: "هر لبخندت 🌟، هر نگاهت 👀، هر نفس‌ات 🍃", bottom: "زندگی من را پر از نور و امید می‌کند ✨" },
+            { top: "تو همان نوری هستی که تاریک‌ترین روزهایم را روشن می‌کند 🌅", bottom: "و آرامشی که قلبم را از طوفان‌ها محافظت می‌کند 🌈💛" },
+            { top: "هرچقدر فاصله باشد، قلب من همیشه کنار تو می‌تپد ❤️", bottom: "وقتی به تو فکر می‌کنم، هیچ دوری واقعی نیست 🌌💖" },
+            { top: "تو عشقی هستی که هیچ واژه‌ای...", bottom: "نمی‌تواند عمق آن را بیان کند 😍💞" },
+            { top: "تولدت مبارک، عشقم عزیزم 🎉💛🎶!", bottom: "فدای تمام مهربانی‌هایت... 🌹" }
+        ];
+
+        let currentStep = 0; let heartInterval;
+        const video = document.getElementById('bg-video');
+        const musicBtn = document.getElementById('music-control');
+        let isPlaying = false;
+
+        window.onload = function() { createStars(); };
+
+        function toggleMusic() {
+            if (isPlaying) { 
+                video.pause(); musicBtn.innerHTML = "🔇"; 
+            } else { 
+                video.play().then(() => { musicBtn.innerHTML = "🎵"; }).catch(e => { console.log("Click needed"); }); 
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div'); star.className = 'star';
+                const size = Math.random() * 2 + 1;
+                star.style.left = `${Math.random() * 100}%`; star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${size}px`; star.style.height = `${size}px`;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                container.appendChild(star);
+            }
+        }
+
+        function createHeart() {
+            const container = document.getElementById('hearts-container');
+            const heart = document.createElement('div'); heart.className = 'heart'; heart.innerHTML = '❤️'; 
+            heart.style.left = Math.random() * 100 + "vw"; heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+            heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+            container.appendChild(heart);
+            setTimeout(() => heart.remove(), 7000);
+        }
+
+        function startHearts(time) { clearInterval(heartInterval); heartInterval = setInterval(createHeart, time); }
+
+        function openGift() {
+            // پخش ویدیو (فقط صدا شنیده می‌شود چون مخفی است)
+            video.volume = 0.8; 
+            video.play().then(() => { 
+                musicBtn.innerHTML = "🎵"; 
+                isPlaying = true; 
+            }).catch(e => console.log("Click required"));
+
+            document.getElementById('intro-screen').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('message-screen').classList.remove('hidden');
+                document.getElementById('message-screen').style.display = 'flex';
+            }, 800);
+            startHearts(600); showMessage(0);
+        }
+
+        function showMessage(index) {
+            const box = document.getElementById('message-box'); box.innerHTML = '';
+            const div = document.createElement('div'); div.className = 'fade-in';
+            div.innerHTML = `<span class="line-one">${messages[index].top}</span><span class="line-two">${messages[index].bottom}</span>`;
+            box.appendChild(div);
+        }
+
+        function nextMessage() {
+            currentStep++;
+            if (currentStep < messages.length) { showMessage(currentStep); startHearts(600 - (currentStep * 80)); } 
+            else { triggerFinale(); }
+        }
+
+        function triggerFinale() {
+            document.getElementById('next-btn').style.display = 'none';
+            const box = document.getElementById('message-box'); box.innerHTML = '';
+            document.getElementById('golden-glow').style.opacity = '1';
+            startHearts(80); 
+            
+            // افزایش صدا
+            let vol = video.volume;
+            const volInterval = setInterval(() => { if (vol < 1.0) { vol += 0.05; video.volume = Math.min(vol, 1.0); } else clearInterval(volInterval); }, 500);
+
+            const finalText = "با تمام قلب و جانم، برای همیشه دوستت دارم 💖🔥🌹✨";
+            const typeContainer = document.createElement('div');
+            typeContainer.style.display = 'flex'; typeContainer.style.justifyContent = 'center';
+            box.appendChild(typeContainer);
+            const textEl = document.createElement('span');
+            textEl.className = 'line-one'; textEl.style.fontSize = '2.2rem'; textEl.style.textShadow = '0 0 25px gold'; textEl.style.marginTop = '40px'; textEl.style.lineHeight = '1.6';
+            typeContainer.appendChild(textEl);
+
+            let i = 0;
+            function typeWriter() {
+                if (i < finalText.length) { textEl.innerHTML += finalText.charAt(i); i++; setTimeout(typeWriter, 120); }
+            }
+            typeWriter();
+        }
+    </script>
+</body>
+</html>
