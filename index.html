@@ -4,92 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تولدت مبارک عشقم</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Lalezar&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@300;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-color: #ff3366; --bg-color: #050510; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background-color: var(--bg-color); color: #fff; font-family: 'Amiri', serif; }
-        #stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; }
-        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--duration) infinite ease-in-out; }
-        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-        #hearts-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .heart { position: absolute; bottom: -50px; color: var(--primary-color); animation: floatUp linear forwards; }
-        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-110vh); opacity: 0; } }
-        .screen { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: opacity 1s; z-index: 10; }
+        :root {
+            --rose-red: #e63946;
+            --soft-pink: #ff85a1;
+            --gold: #ffd700;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; font-family: 'Vazirmatn', sans-serif;
+            background: radial-gradient(circle at center, #2b0d0d 0%, #0a0505 100%);
+        }
+
+        /* لایه گلبرگ‌ها و قلب‌ها */
+        #particle-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+
+        .main-wrapper {
+            position: relative; z-index: 10;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh;
+        }
+
+        /* کارت نئونی رمانتیک مشابه تصویر */
+        .glass-card {
+            background: rgba(255, 51, 102, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--rose-red);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            max-width: 450px; width: 85%;
+            box-shadow: 0 0 30px rgba(230, 57, 70, 0.4), inset 0 0 20px rgba(230, 57, 70, 0.2);
+            transition: all 0.6s ease;
+        }
+
+        .lalezar { font-family: 'Lalezar', cursive; }
+        
+        .gift-box {
+            font-size: 80px; cursor: pointer;
+            filter: drop-shadow(0 0 15px var(--gold));
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--rose-red), var(--soft-pink));
+            border: none; padding: 15px 40px;
+            color: white; border-radius: 50px;
+            font-family: 'Lalezar', cursive; font-size: 1.4rem;
+            cursor: pointer; transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+            margin-top: 25px;
+        }
+
+        .btn:hover { transform: scale(1.05); box-shadow: 0 8px 25px var(--rose-red); }
+
+        .message-area { font-size: 1.8rem; line-height: 1.5; min-height: 100px; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+
         .hidden { display: none; opacity: 0; }
-        .gift-box { font-size: 100px; cursor: pointer; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        .btn { margin-top: 30px; padding: 12px 40px; background: var(--primary-color); color: white; border-radius: 50px; cursor: pointer; border: none; font-family: 'Lalezar', cursive; font-size: 1.3rem; }
-        .line-one { font-family: 'Lalezar', cursive; font-size: 2rem; margin-bottom: 20px; }
-        .line-two { font-size: 1.6rem; color: #ffadc6; }
-        #music-control { position: fixed; top: 20px; right: 20px; z-index: 100; background: rgba(0,0,0,0.5); border: 1px solid #fff; color: #fff; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
+
+        /* انیمیشن گلبرگ‌ها */
+        .petal {
+            position: fixed; pointer-events: none; z-index: 2;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
-    <div id="stars-container"></div>
-    <div id="hearts-container"></div>
-    <audio id="bg-music" loop><source src="song.mp3" type="audio/mpeg"></audio>
-    <button id="music-control" onclick="toggleMusic()">🔇</button>
 
-    <div id="intro-screen" class="screen">
-        <div class="gift-box" onclick="openGift()">🎁</div>
-        <button class="btn" onclick="openGift()">باز کردن هدیه</button>
-    </div>
+    <div id="particle-container"></div>
 
-    <div id="message-screen" class="screen hidden">
-        <div id="message-box"></div>
-        <button id="next-btn" class="btn" onclick="nextMessage()">بعدی ❤️</button>
+    <audio id="bgMusic" loop>
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="main-wrapper">
+        <div id="scr1" class="glass-card">
+            <div class="gift-box" onclick="startApp()">🎁</div>
+            <h1 class="lalezar" style="color: var(--soft-pink);">یک هدیه برای تو</h1>
+            <button class="btn" onclick="startApp()">باز کردن ❤️</button>
+        </div>
+
+        <div id="scr2" class="glass-card hidden">
+            <div id="text-target" class="message-area lalezar"></div>
+            <button class="btn" onclick="nextMsg()">بعدی 💌</button>
+        </div>
+
+        <div id="scr3" class="glass-card hidden">
+            <h1 class="lalezar" style="color: var(--gold); font-size: 2.5rem;">تولدت مبارک عشقم!</h1>
+            <button class="btn" style="background: var(--gold); color: #000;" onclick="storm()">💖 انفجار گلبرگ‌ها 💖</button>
+            <div id="final-txt" class="lalezar hidden" style="margin-top: 20px; font-size: 2.2rem; color: var(--soft-pink);">تا ابد دوستت دارم ❤️</div>
+        </div>
     </div>
 
     <script>
+        const audio = document.getElementById('bgMusic');
+        const container = document.getElementById('particle-container');
         const messages = [
-            { top: "عشقم 💖، تولدت مبارک 🎂✨!", bottom: "امروز روز توست و دلم می‌خواست کنار تو باشم 🌹" },
-            { top: "کاش می‌شد دستت را در دستم بگیرم 🤲", bottom: "و با تو این روز زیبا را جشن بگیرم... 🎉" },
-            { top: "اما حتی وقتی از هم دوریم... 🌌", bottom: "حس می‌کنم تو همین لحظه کنار من هستی 💞" },
-            { top: "تولدت مبارک، عشقم عزیزم 🎉💛🎶!", bottom: "با تمام قلب و جانم، دوستت دارم 💖" }
+            "عشقم 💖، تولدت مبارک 🎂✨!",
+            "امروز روز توست و دلم می‌خواست کنار تو باشم 🌹",
+            "کاش می‌شد دستت را در دستم بگیرم 🤲",
+            "اما حتی وقتی از هم دوریم... 🌌",
+            "حس می‌کنم تو همین لحظه کنار من هستی 💞",
+            "تولدت مبارک، تمامِ زندگی من 🎉💛🎶!"
         ];
-        let currentStep = 0;
-        const music = document.getElementById('bg-music');
-        function toggleMusic() {
-            if (music.paused) { music.play(); document.getElementById('music-control').innerText = "🎵"; }
-            else { music.pause(); document.getElementById('music-control').innerText = "🔇"; }
+
+        let msgIdx = 0;
+
+        function createPetal(type) {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            // انتخاب تصادفی بین گلبرگ رز و قلب
+            const items = ['🌸', '🌹', '❤️', '💖', '🍃'];
+            petal.innerHTML = items[Math.floor(Math.random() * items.length)];
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            const duration = Math.random() * 4 + 4;
+            petal.style.animationDuration = duration + 's';
+            container.appendChild(petal);
+            setTimeout(() => petal.remove(), duration * 1000);
         }
-        function openGift() {
-            music.play();
-            document.getElementById('music-control').innerText = "🎵";
-            document.getElementById('intro-screen').classList.add('hidden');
-            document.getElementById('message-screen').classList.remove('hidden');
-            showMessage(0);
-            setInterval(createHeart, 600);
+
+        // بارش ملایم همیشگی
+        setInterval(() => createPetal(), 400);
+
+        function startApp() {
+            audio.play().catch(() => {});
+            transition('scr1', 'scr2');
+            updateText();
         }
-        function showMessage(index) {
-            document.getElementById('message-box').innerHTML = `<p class="line-one">${messages[index].top}</p><p class="line-two">${messages[index].bottom}</p>`;
+
+        function transition(id1, id2) {
+            const s1 = document.getElementById(id1);
+            const s2 = document.getElementById(id2);
+            s1.style.opacity = '0';
+            setTimeout(() => {
+                s1.classList.add('hidden');
+                s2.classList.remove('hidden');
+                setTimeout(() => s2.style.opacity = '1', 50);
+            }, 500);
         }
-        function nextMessage() {
-            currentStep++;
-            if (currentStep < messages.length) showMessage(currentStep);
-            else { document.getElementById('message-box').innerHTML = "<p class='line-one'>تا ابد عاشقتم ❤️</p>"; document.getElementById('next-btn').style.display='none'; }
+
+        function updateText() {
+            document.getElementById('text-target').innerText = messages[msgIdx];
         }
-        function createStars() {
-            for (let i = 0; i < 100; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = star.style.height = Math.random() * 3 + 'px';
-                star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
-                document.getElementById('stars-container').appendChild(star);
-            }
+
+        function nextMsg() {
+            msgIdx++;
+            if(msgIdx < messages.length) updateText();
+            else transition('scr2', 'scr3');
         }
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'heart'; heart.innerText = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-            document.getElementById('hearts-container').appendChild(heart);
-            setTimeout(() => heart.remove(), 6000);
+
+        function storm() {
+            document.getElementById('final-txt').classList.remove('hidden');
+            document.getElementById('final-txt').style.opacity = '1';
+            audio.play();
+            // انفجار شدید گلبرگ
+            setInterval(() => createPetal(), 80);
         }
-        createStars();
     </script>
 </body>
 </html>
