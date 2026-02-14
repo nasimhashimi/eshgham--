@@ -13,66 +13,66 @@
         .wrapper { position: relative; z-index: 10; display: flex; justify-content: center; align-items: center; height: 100vh; }
         
         .card { 
-            background: rgba(20, 5, 5, 0.65); 
+            background: rgba(20, 5, 5, 0.75); 
             backdrop-filter: blur(15px); 
             border: 2px solid var(--gold); 
             border-radius: 30px; 
-            padding: 25px 20px; 
+            padding: 20px; 
             text-align: center; 
             width: 85%; max-width: 400px; 
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); 
             transition: all 0.6s ease;
-            max-height: 90vh; /* جلوگیری از بیرون زدن از صفحه */
-            overflow-y: auto; /* اگر محتوا زیاد شد اسکرول شود */
+            max-height: 95vh;
+            overflow-y: auto;
         }
 
         .lalezar { font-family: 'Lalezar', cursive; }
         
         /* دکمه‌ها */
-        .btn-group {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            gap: 15px; 
-            margin-top: 20px; 
-            width: 100%;
-        }
-
-        .btn { 
-            border: none; padding: 12px 0; 
-            border-radius: 50px; 
-            font-size: 1.1rem; cursor: pointer; 
-            font-family: 'Lalezar'; flex: 1;
-            transition: 0.3s; 
-            height: 50px;
-        }
-
-        .btn-next { background: linear-gradient(45deg, var(--gold), #ffaa00); color: #000; box-shadow: 0 0 15px var(--gold); }
-        .btn-next:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--gold); }
-
+        .btn-group { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 15px; width: 100%; }
+        .btn { border: none; padding: 12px 0; border-radius: 50px; font-size: 1.1rem; cursor: pointer; font-family: 'Lalezar'; flex: 1; transition: 0.3s; height: 45px; color: #000; display: flex; align-items: center; justify-content: center;}
+        .btn-next { background: linear-gradient(45deg, var(--gold), #ffaa00); box-shadow: 0 0 15px var(--gold); }
+        .btn-next:hover { transform: scale(1.05); }
         .btn-prev { background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 215, 0, 0.4); }
-        .btn-prev:hover { background: rgba(255, 255, 255, 0.2); }
 
-        /* --- اصلاح مهم برای نمایش کامل عکس --- */
+        /* دکمه واتساپ */
+        .btn-whatsapp {
+            background: linear-gradient(45deg, #25D366, #128C7E);
+            color: white;
+            box-shadow: 0 0 15px #25D366;
+            width: 100%; margin-top: 10px;
+        }
+
+        /* عکس نهایی */
         .final-photo {
-            width: 100%;
-            height: auto;          /* ارتفاع اتوماتیک */
-            max-height: 45vh;      /* حداکثر نصف صفحه را بگیرد */
-            object-fit: contain;   /* کل عکس را نشان بده (بدون بریدن) */
-            border-radius: 15px;
-            border: 3px solid var(--gold);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-            margin-bottom: 15px;
-            display: none;
-            background-color: rgba(0,0,0,0.3); /* پس زمینه تیره زیر عکس */
+            width: 100%; height: auto; max-height: 35vh;
+            object-fit: contain; border-radius: 15px;
+            border: 2px solid var(--gold);
+            margin-bottom: 15px; display: none;
+            background: rgba(0,0,0,0.3);
             animation: zoomIn 1s ease forwards;
         }
         @keyframes zoomIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .msg-area { font-size: 1.4rem; line-height: 1.8; color: #fff; min-height: 120px; display: flex; align-items: center; justify-content: center; text-align: center; }
+        /* باکس پیام */
+        .message-box {
+            display: none; /* اول مخفی */
+            margin-top: 15px;
+            animation: fadeIn 1s ease;
+        }
+        .love-textarea {
+            width: 100%; height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--gold);
+            border-radius: 15px; color: #fff;
+            padding: 10px; font-family: 'Vazirmatn'; font-size: 1rem;
+            resize: none; outline: none; text-align: right; direction: rtl;
+        }
+        .love-textarea::placeholder { color: rgba(255, 255, 255, 0.7); }
+
+        .msg-area { font-size: 1.3rem; line-height: 1.8; color: #fff; min-height: 100px; display: flex; align-items: center; justify-content: center; text-align: center; }
         .hidden { display: none; opacity: 0; }
-        
-        .particle { position: fixed; bottom: -50px; z-index: 2; animation: flyUp linear forwards; }
+        .particle { position: fixed; bottom: -50px; z-index: 100; pointer-events: none; animation: flyUp linear forwards; }
         @keyframes flyUp { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
     </style>
 </head>
@@ -86,10 +86,9 @@
 
     <div class="wrapper">
         <div id="scr1" class="card">
-            <div style="font-size: 80px; animation: pulse 2s infinite; margin-bottom: 10px;">🎁</div>
+            <div style="font-size: 70px; animation: pulse 2s infinite; margin-bottom: 10px;">🎁</div>
             <h1 class="lalezar" style="color: var(--gold); font-size: 1.8rem;">تقدیم به ملکه‌ی قلبم</h1>
-            <p style="color: #ccc; margin-bottom: 20px;">یک هدیه کوچک برای تو...</p>
-            <button class="btn btn-next" style="width:100%;" onclick="startApp()">باز کردن سوپرایز ❤️</button>
+            <button class="btn btn-next" style="width:100%; margin-top:20px;" onclick="startApp()">باز کردن سوپرایز ❤️</button>
         </div>
 
         <div id="scr2" class="card hidden">
@@ -102,13 +101,18 @@
 
         <div id="scr3" class="card hidden">
             <img src="photo.jpg" alt="عشق ما" class="final-photo" id="myPhoto">
+            <h1 class="lalezar" style="color: var(--gold); font-size: 1.6rem;">تولدت مبارک عشقم!</h1>
             
-            <h1 class="lalezar" style="color: var(--gold); font-size: 1.8rem;">تولدت مبارک عشقم!</h1>
-            
-            <button class="btn btn-next" style="width:100%; margin-top: 10px; background: linear-gradient(45deg, #ff0044, #ff5588); color: white;" onclick="storm()">💋 نمایش عشق و بوسه 💋</button>
-            
-            <div id="final-wish" class="lalezar hidden" style="margin-top: 15px; color: var(--gold); font-size: 1.3rem;">
-                در ضربان قلبم، فقط نام توست...<br>تا ابد عاشقتم ❤️💍
+            <div id="final-wish" class="lalezar hidden" style="margin-top: 10px; color: #fff; font-size: 1.1rem;">
+                تا ابد عاشقتم ❤️💍
+            </div>
+
+            <button id="storm-btn" class="btn btn-next" style="width:100%; margin-top: 15px; background: linear-gradient(45deg, #ff0044, #ff5588); color: white;" onclick="storm()">💋 بارانِ عشق و نوشتن پیام 💋</button>
+
+            <div id="wa-box" class="message-box">
+                <p class="lalezar" style="color: var(--gold); margin-bottom: 5px;">حرف دلت رو برام بنویس 💌:</p>
+                <textarea id="user-msg" class="love-textarea" placeholder="اینجا بنویس عشقم..."></textarea>
+                <button class="btn btn-whatsapp" onclick="sendToWhatsApp()">🚀 ارسال به واتساپ من</button>
             </div>
         </div>
     </div>
@@ -126,7 +130,6 @@
         ];
         let idx = 0;
 
-        // پس‌زمینه ستاره‌ای
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -152,17 +155,14 @@
         setInterval(()=>createParticle(false), 500);
 
         function startApp() { audio.play().catch(()=>{}); transition('scr1','scr2'); update(); }
-        
         function transition(id1, id2) {
             document.getElementById(id1).style.opacity='0';
             setTimeout(()=>{ document.getElementById(id1).classList.add('hidden'); document.getElementById(id2).classList.remove('hidden'); setTimeout(()=>document.getElementById(id2).style.opacity='1',50); },500);
         }
-        
         function update() { 
             document.getElementById('text-target').innerHTML = messages[idx];
             document.getElementById('prev-btn').style.visibility = idx===0 ? 'hidden' : 'visible';
         }
-        
         function nextMsg() { if(++idx < messages.length) update(); else transition('scr2','scr3'); }
         function prevMsg() { if(idx>0) { idx--; update(); } }
         
@@ -172,6 +172,26 @@
             document.getElementById('myPhoto').style.display = 'block';
             document.getElementById('final-wish').classList.remove('hidden');
             document.getElementById('final-wish').style.opacity = '1';
+            document.getElementById('storm-btn').style.display = 'none'; // مخفی کردن دکمه بعد از کلیک
+            document.getElementById('wa-box').style.display = 'block'; // نمایش باکس واتساپ
+        }
+
+        // تابع ارسال به واتساپ با شماره شما
+        function sendToWhatsApp() {
+            var msg = document.getElementById('user-msg').value;
+            if(msg.trim() === "") {
+                alert("لطفاً یک چیزی بنویس عشقم! 💌");
+                return;
+            }
+            
+            // شماره شما: +923179856295
+            var phoneNumber = "923179856295"; 
+            
+            // ساخت لینک واتساپ
+            var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(msg);
+            
+            // باز کردن واتساپ
+            window.open(url, '_blank');
         }
     </script>
 </body>
