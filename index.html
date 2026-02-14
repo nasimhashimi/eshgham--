@@ -17,22 +17,24 @@
             backdrop-filter: blur(15px); 
             border: 2px solid var(--gold); 
             border-radius: 30px; 
-            padding: 30px 20px; 
+            padding: 25px 20px; 
             text-align: center; 
             width: 85%; max-width: 400px; 
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); 
             transition: all 0.6s ease;
+            max-height: 90vh; /* جلوگیری از بیرون زدن از صفحه */
+            overflow-y: auto; /* اگر محتوا زیاد شد اسکرول شود */
         }
 
         .lalezar { font-family: 'Lalezar', cursive; }
         
-        /* --- تنظیم دقیق دکمه‌ها --- */
+        /* دکمه‌ها */
         .btn-group {
             display: flex; 
-            justify-content: space-between; /* فاصله انداختن بین دکمه‌ها */
+            justify-content: space-between; 
             align-items: center;
             gap: 15px; 
-            margin-top: 25px; 
+            margin-top: 20px; 
             width: 100%;
         }
 
@@ -42,41 +44,34 @@
             font-size: 1.1rem; cursor: pointer; 
             font-family: 'Lalezar'; flex: 1;
             transition: 0.3s; 
-            height: 50px; /* ارتفاع ثابت برای زیبایی */
+            height: 50px;
         }
 
-        /* استایل دکمه بعدی (راست - رنگی) */
-        .btn-next {
-            background: linear-gradient(45deg, var(--gold), #ffaa00); 
-            color: #000; 
-            box-shadow: 0 0 15px var(--gold);
-        }
+        .btn-next { background: linear-gradient(45deg, var(--gold), #ffaa00); color: #000; box-shadow: 0 0 15px var(--gold); }
         .btn-next:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--gold); }
 
-        /* استایل دکمه قبلی (چپ - شیشه‌ای) */
-        .btn-prev {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: 1px solid rgba(255, 215, 0, 0.4);
-        }
+        .btn-prev { background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 215, 0, 0.4); }
         .btn-prev:hover { background: rgba(255, 255, 255, 0.2); }
 
-        /* استایل عکس نهایی */
+        /* --- اصلاح مهم برای نمایش کامل عکس --- */
         .final-photo {
             width: 100%;
-            height: 250px; /* ارتفاع عکس */
-            object-fit: cover;
-            border-radius: 20px;
+            height: auto;          /* ارتفاع اتوماتیک */
+            max-height: 45vh;      /* حداکثر نصف صفحه را بگیرد */
+            object-fit: contain;   /* کل عکس را نشان بده (بدون بریدن) */
+            border-radius: 15px;
             border: 3px solid var(--gold);
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             display: none;
+            background-color: rgba(0,0,0,0.3); /* پس زمینه تیره زیر عکس */
             animation: zoomIn 1s ease forwards;
         }
         @keyframes zoomIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .msg-area { font-size: 1.4rem; line-height: 1.8; color: #fff; min-height: 120px; display: flex; align-items: center; justify-content: center; text-align: center; }
         .hidden { display: none; opacity: 0; }
+        
         .particle { position: fixed; bottom: -50px; z-index: 2; animation: flyUp linear forwards; }
         @keyframes flyUp { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
     </style>
@@ -99,7 +94,6 @@
 
         <div id="scr2" class="card hidden">
             <div id="text-target" class="msg-area lalezar"></div>
-            
             <div class="btn-group">
                 <button id="next-btn" class="btn btn-next" onclick="nextMsg()">بعدی ✨</button>
                 <button id="prev-btn" class="btn btn-prev" onclick="prevMsg()">قبلی ↩️</button>
@@ -109,10 +103,11 @@
         <div id="scr3" class="card hidden">
             <img src="photo.jpg" alt="عشق ما" class="final-photo" id="myPhoto">
             
-            <h1 class="lalezar" style="color: var(--gold); font-size: 2rem;">تولدت مبارک عشقم!</h1>
-            <button class="btn btn-next" style="width:100%; background: linear-gradient(45deg, #ff0044, #ff5588); color: white;" onclick="storm()">💋 نمایش عشق و عکس 💋</button>
+            <h1 class="lalezar" style="color: var(--gold); font-size: 1.8rem;">تولدت مبارک عشقم!</h1>
             
-            <div id="final-wish" class="lalezar hidden" style="margin-top: 20px; color: var(--gold); font-size: 1.4rem;">
+            <button class="btn btn-next" style="width:100%; margin-top: 10px; background: linear-gradient(45deg, #ff0044, #ff5588); color: white;" onclick="storm()">💋 نمایش عشق و بوسه 💋</button>
+            
+            <div id="final-wish" class="lalezar hidden" style="margin-top: 15px; color: var(--gold); font-size: 1.3rem;">
                 در ضربان قلبم، فقط نام توست...<br>تا ابد عاشقتم ❤️💍
             </div>
         </div>
@@ -165,7 +160,6 @@
         
         function update() { 
             document.getElementById('text-target').innerHTML = messages[idx];
-            // دکمه قبلی در پیام اول مخفی می‌شود
             document.getElementById('prev-btn').style.visibility = idx===0 ? 'hidden' : 'visible';
         }
         
@@ -175,7 +169,6 @@
         function storm() { 
             setInterval(()=>createParticle(true), 80); 
             audio.play();
-            // نمایش عکس و متن نهایی
             document.getElementById('myPhoto').style.display = 'block';
             document.getElementById('final-wish').classList.remove('hidden');
             document.getElementById('final-wish').style.opacity = '1';
