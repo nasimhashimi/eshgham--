@@ -2,257 +2,184 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>دنیای ملکه‌ی من</title>
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/misc/Farsi-Digits/font-face-FD.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تولدت مبارک ملکه‌ی من</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@300;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --gold: #FFD700;
-            --rose: #ff0055;
-            --bg-dark: #1a0505;
-            --card-glass: rgba(30, 10, 10, 0.6);
+        :root { --rose: #ff0044; --gold: #ffd700; --dark: #05050a; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: var(--dark); font-family: 'Vazirmatn', sans-serif; }
+        
+        #canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        .wrapper { position: relative; z-index: 10; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        
+        .card { 
+            background: rgba(20, 5, 5, 0.65); 
+            backdrop-filter: blur(15px); 
+            border: 2px solid var(--gold); 
+            border-radius: 30px; 
+            padding: 30px 20px; 
+            text-align: center; 
+            width: 85%; max-width: 400px; 
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); 
+            transition: all 0.6s ease;
         }
 
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at bottom, #2e0909, #000);
-            overflow: hidden;
-            font-family: 'Vazirmatn', sans-serif;
+        .lalezar { font-family: 'Lalezar', cursive; }
+        
+        /* --- تنظیم دقیق دکمه‌ها --- */
+        .btn-group {
+            display: flex; 
+            justify-content: space-between; /* فاصله انداختن بین دکمه‌ها */
+            align-items: center;
+            gap: 15px; 
+            margin-top: 25px; 
+            width: 100%;
+        }
+
+        .btn { 
+            border: none; padding: 12px 0; 
+            border-radius: 50px; 
+            font-size: 1.1rem; cursor: pointer; 
+            font-family: 'Lalezar'; flex: 1;
+            transition: 0.3s; 
+            height: 50px; /* ارتفاع ثابت برای زیبایی */
+        }
+
+        /* استایل دکمه بعدی (راست - رنگی) */
+        .btn-next {
+            background: linear-gradient(45deg, var(--gold), #ffaa00); 
+            color: #000; 
+            box-shadow: 0 0 15px var(--gold);
+        }
+        .btn-next:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--gold); }
+
+        /* استایل دکمه قبلی (چپ - شیشه‌ای) */
+        .btn-prev {
+            background: rgba(255, 255, 255, 0.1);
             color: #fff;
+            border: 1px solid rgba(255, 215, 0, 0.4);
         }
+        .btn-prev:hover { background: rgba(255, 255, 255, 0.2); }
 
-        /* بوم ستاره‌ها */
-        #stars-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-
-        .main-container {
-            position: relative; z-index: 20; /* بالاتر از حیوانات */
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            height: 100vh; width: 100%;
-            padding: 20px;
+        /* استایل عکس نهایی */
+        .final-photo {
+            width: 100%;
+            height: 250px; /* ارتفاع عکس */
+            object-fit: cover;
+            border-radius: 20px;
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 20px;
+            display: none;
+            animation: zoomIn 1s ease forwards;
         }
+        @keyframes zoomIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* کارت شیشه‌ای لوکس */
-        .glass-card {
-            background: var(--card-glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 30px;
-            padding: 30px 20px;
-            width: 100%; max-width: 380px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-            display: none; opacity: 0; transform: scale(0.9);
-        }
-
-        .glass-card.active { display: block; opacity: 1; transform: scale(1); }
-
-        h1 { font-family: 'Lalezar'; color: var(--gold); margin-bottom: 10px; font-size: 1.8rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
-        p { font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px; color: #f0f0f0; }
-
-        .btn-cute {
-            background: linear-gradient(45deg, #ff3366, #ff6b6b);
-            border: none; padding: 12px 35px;
-            color: white; border-radius: 50px;
-            font-family: 'Lalezar'; font-size: 1.2rem;
-            cursor: pointer; box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
-            transition: 0.3s;
-        }
-        .btn-cute:active { transform: scale(0.95); }
-
-        /* --- انیمیشن حیوانات (Walkers) --- */
-        .walker {
-            position: fixed;
-            bottom: 10px; /* روی زمین راه بروند */
-            z-index: 5;
-            font-size: 40px;
-            pointer-events: none;
-            animation: walkRight linear forwards;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
-        }
-
-        @keyframes walkRight {
-            0% { transform: translateX(-100px) scaleX(1); } /* از چپ میاد */
-            100% { transform: translateX(110vw) scaleX(1); } /* میره راست */
-        }
-
-        /* --- انیمیشن پروانه‌ها (Flyers) --- */
-        .flyer {
-            position: fixed;
-            z-index: 6;
-            font-size: 30px;
-            pointer-events: none;
-            animation: flyAround linear forwards;
-        }
-
-        @keyframes flyAround {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-            20% { opacity: 1; }
-            100% { transform: translate(100px, -100vh) rotate(20deg); opacity: 0; }
-        }
-
-        /* --- انیمیشن قلب‌های بالا رونده --- */
-        .heart-rise {
-            position: fixed; bottom: -50px; z-index: 10;
-            animation: riseUp linear forwards;
-        }
-        @keyframes riseUp {
-            0% { transform: translateY(0); opacity: 0; }
-            20% { opacity: 1; }
-            100% { transform: translateY(-110vh); opacity: 0; }
-        }
-
+        .msg-area { font-size: 1.4rem; line-height: 1.8; color: #fff; min-height: 120px; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .hidden { display: none; opacity: 0; }
+        .particle { position: fixed; bottom: -50px; z-index: 2; animation: flyUp linear forwards; }
+        @keyframes flyUp { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <canvas id="stars-canvas"></canvas>
-
-    <audio id="music" loop preload="auto">
+    <canvas id="canvas"></canvas>
+    <audio id="bgMusic" loop preload="auto">
         <source src="song.mp3" type="audio/mpeg">
         <source src="song.mp3.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="main-container">
-        <div id="card1" class="glass-card active">
-            <div style="font-size: 80px; animation: bounce 2s infinite;">🎁</div>
-            <h1>برای ملکه قلبم</h1>
-            <p>این باغ زیبا تقدیم به کسی که<br>زندگیم رو مثل رویا کرد...</p>
-            <button class="btn-cute" onclick="startShow()">ورود به دنیای عشق ❤️</button>
+    <div class="wrapper">
+        <div id="scr1" class="card">
+            <div style="font-size: 80px; animation: pulse 2s infinite; margin-bottom: 10px;">🎁</div>
+            <h1 class="lalezar" style="color: var(--gold); font-size: 1.8rem;">تقدیم به ملکه‌ی قلبم</h1>
+            <p style="color: #ccc; margin-bottom: 20px;">یک هدیه کوچک برای تو...</p>
+            <button class="btn btn-next" style="width:100%;" onclick="startApp()">باز کردن سوپرایز ❤️</button>
         </div>
 
-        <div id="card2" class="glass-card">
-            <div id="msg-box" style="min-height: 120px; display:flex; align-items:center; justify-content:center;"></div>
-            <button class="btn-cute" onclick="nextMsg()">بعدی ✨</button>
+        <div id="scr2" class="card hidden">
+            <div id="text-target" class="msg-area lalezar"></div>
+            
+            <div class="btn-group">
+                <button id="next-btn" class="btn btn-next" onclick="nextMsg()">بعدی ✨</button>
+                <button id="prev-btn" class="btn btn-prev" onclick="prevMsg()">قبلی ↩️</button>
+            </div>
         </div>
 
-        <div id="card3" class="glass-card">
-            <h1 style="color: var(--gold); font-size: 2.2rem;">تولدت مبارک عشقم!</h1>
-            <p>دوستت دارم، بیشتر از تمام ستاره‌های آسمان...</p>
-            <button class="btn-cute" style="background: linear-gradient(45deg, #ffd700, #ffaa00);" onclick="finalMagic()">💖 باران عشق و بوسه 💖</button>
+        <div id="scr3" class="card hidden">
+            <img src="photo.jpg" alt="عشق ما" class="final-photo" id="myPhoto">
+            
+            <h1 class="lalezar" style="color: var(--gold); font-size: 2rem;">تولدت مبارک عشقم!</h1>
+            <button class="btn btn-next" style="width:100%; background: linear-gradient(45deg, #ff0044, #ff5588); color: white;" onclick="storm()">💋 نمایش عشق و عکس 💋</button>
+            
+            <div id="final-wish" class="lalezar hidden" style="margin-top: 20px; color: var(--gold); font-size: 1.4rem;">
+                در ضربان قلبم، فقط نام توست...<br>تا ابد عاشقتم ❤️💍
+            </div>
         </div>
     </div>
 
     <script>
-        const audio = document.getElementById('music');
+        const audio = document.getElementById('bgMusic');
         const messages = [
-            "عشقم 💖<br>امروز روزی است که<br>فرشته‌ای به نام تو پا به زمین گذاشت 👑✨",
-            "جهان من با خنده‌های تو<br>روشن و زیبا شد 🌹",
-            "هر نگاه تو 👀<br>آرامشی است که طوفان‌های دلم را ساکت می‌کند 🍃",
-            "حتی وقتی دوری 🌌<br>حس می‌کنم کنارم قدم می‌زنی 💞",
-            "تو آن گربه‌ی ملوسی هستی<br>که صاحب تمام قلب من شدی! 🐈💖",
-            "تولدت مبارک تمامِ زندگی من 🎉<br>عاشقتم تا ابد! 🔥🌹"
+            "عشقم 💖، امروز روزی است که<br>ملکه‌ی زیبایی و عشق به دنیا آمد 👑✨",
+            "روزی که جهان با آمدنت روشن شد 🌹<br>و قلب من برای همیشه عاشق تو شد 💞",
+            "هر لبخندت 🌟، هر نگاهت 👀 و هر نفس‌ات 🍃<br>زندگی من را پر از شادی و آرامش می‌کند",
+            "تو نوری هستی که تاریک‌ترین روزهایم را روشن می‌کند 🌅<br>و آرامشی که قلبم را از هر طوفانی محافظت می‌کند 🌈💛",
+            "حتی اگر از هم دور باشیم 🌌<br>هر لحظه حس می‌کنم کنار من هستی 💖",
+            "تو عشقی هستی که هیچ واژه‌ای 😍💞<br>نمی‌تواند عمقش را بیان کند",
+            "تولدت مبارک، ملکه‌ی قلب من 🎉👑💛!<br>با تمام قلب و جانم دوستت دارم 💖🔥"
         ];
         let idx = 0;
 
-        // --- شروع برنامه ---
-        function startShow() {
-            audio.play().catch(e => console.log("Audio needs interaction"));
-            swap('card1', 'card2');
-            showText();
-            
-            // شروع رژه حیوانات
-            setInterval(createWalker, 3000); // هر 3 ثانیه یک حیوان رد میشه
-            setInterval(createFlyer, 2000);  // پروانه‌ها
-        }
-
-        function swap(hide, show) {
-            document.getElementById(hide).classList.remove('active');
-            setTimeout(() => {
-                document.getElementById(hide).style.display = 'none';
-                document.getElementById(show).classList.add('active');
-            }, 500);
-        }
-
-        function showText() {
-            const box = document.getElementById('msg-box');
-            box.style.opacity = 0;
-            setTimeout(() => {
-                box.innerHTML = `<h2 class="lalezar" style="color:#fff; line-height:1.6;">${messages[idx]}</h2>`;
-                box.style.opacity = 1;
-            }, 300);
-        }
-
-        function nextMsg() {
-            idx++;
-            if (idx < messages.length) showText();
-            else swap('card2', 'card3');
-        }
-
-        function finalMagic() {
-            audio.play();
-            // باران شدید قلب از پایین
-            setInterval(() => {
-                const h = document.createElement('div');
-                h.className = 'heart-rise';
-                h.innerHTML = ['❤️','💖','💋','✨'][Math.floor(Math.random()*4)];
-                h.style.left = Math.random()*100+'vw';
-                h.style.fontSize = (Math.random()*30+20)+'px';
-                h.style.animationDuration = (Math.random()*2+3)+'s';
-                document.body.appendChild(h);
-                setTimeout(()=>h.remove(), 5000);
-            }, 100);
-        }
-
-        // --- توابع ساخت حیوانات (Cuteness Overload) ---
-
-        // 1. حیوانات زمینی (راه رونده)
-        function createWalker() {
-            const walker = document.createElement('div');
-            walker.className = 'walker';
-            
-            // لیست حیوانات مورد علاقه دخترها
-            const animals = ['🐈', '🐈‍⬛', '🐇', '🐩', '🦌', '🦆']; 
-            walker.innerHTML = animals[Math.floor(Math.random() * animals.length)];
-            
-            // سرعت حرکت تصادفی
-            const duration = Math.random() * 10 + 10; // بین 10 تا 20 ثانیه (آرام)
-            walker.style.animationDuration = duration + 's';
-            
-            document.body.appendChild(walker);
-            setTimeout(() => walker.remove(), duration * 1000);
-        }
-
-        // 2. موجودات پرنده (پروانه و پرنده)
-        function createFlyer() {
-            const flyer = document.createElement('div');
-            flyer.className = 'flyer';
-            const wings = ['🦋', '🕊️', '🐝', '🐞'];
-            flyer.innerHTML = wings[Math.floor(Math.random() * wings.length)];
-            
-            flyer.style.left = Math.random() * 100 + 'vw';
-            flyer.style.top = Math.random() * 80 + 'vh'; // در ارتفاع‌های مختلف
-            
-            const dur = Math.random() * 5 + 5;
-            flyer.style.animationDuration = dur + 's';
-            
-            document.body.appendChild(flyer);
-            setTimeout(() => flyer.remove(), dur * 1000);
-        }
-
-        // --- پس‌زمینه ستاره‌ای ---
-        const canvas = document.getElementById('stars-canvas');
+        // پس‌زمینه ستاره‌ای
+        const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
-        
-        const stars = Array(100).fill().map(() => ({
-            x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.5
-        }));
-        
-        function drawStars() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = "white";
-            stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill(); });
-            requestAnimationFrame(drawStars);
+        let stars = Array(150).fill().map(() => ({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*2, o:Math.random()}));
+        function anim() { 
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='white'; 
+            stars.forEach(s=>{ctx.globalAlpha=s.o; ctx.beginPath(); ctx.arc(s.x,s.y,s.s,0,7); ctx.fill()}); 
+            requestAnimationFrame(anim);
         }
-        drawStars();
+        anim();
 
+        function createParticle(isStorm) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerHTML = isStorm ? ['💋','❤️','🌹','👑','💍'][Math.floor(Math.random()*5)] : ['🌹','❤️','✨'];
+            p.style.left = Math.random()*100+'vw';
+            p.style.fontSize = (Math.random()*(isStorm?40:20)+20)+'px';
+            p.style.animationDuration = (isStorm?2:5)+'s';
+            document.body.appendChild(p);
+            setTimeout(()=>p.remove(), 5000);
+        }
+        setInterval(()=>createParticle(false), 500);
+
+        function startApp() { audio.play().catch(()=>{}); transition('scr1','scr2'); update(); }
+        
+        function transition(id1, id2) {
+            document.getElementById(id1).style.opacity='0';
+            setTimeout(()=>{ document.getElementById(id1).classList.add('hidden'); document.getElementById(id2).classList.remove('hidden'); setTimeout(()=>document.getElementById(id2).style.opacity='1',50); },500);
+        }
+        
+        function update() { 
+            document.getElementById('text-target').innerHTML = messages[idx];
+            // دکمه قبلی در پیام اول مخفی می‌شود
+            document.getElementById('prev-btn').style.visibility = idx===0 ? 'hidden' : 'visible';
+        }
+        
+        function nextMsg() { if(++idx < messages.length) update(); else transition('scr2','scr3'); }
+        function prevMsg() { if(idx>0) { idx--; update(); } }
+        
+        function storm() { 
+            setInterval(()=>createParticle(true), 80); 
+            audio.play();
+            // نمایش عکس و متن نهایی
+            document.getElementById('myPhoto').style.display = 'block';
+            document.getElementById('final-wish').classList.remove('hidden');
+            document.getElementById('final-wish').style.opacity = '1';
+        }
     </script>
 </body>
 </html>
